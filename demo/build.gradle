@@ -14,6 +14,7 @@ buildscript {
         classpath 'net.nemerosa:versioning:2.1.0'
         classpath 'io.ratpack:ratpack-gradle:1.5.0'
         classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
+        classpath 'com.bmuschko:gradle-docker-plugin:3.2.0'
     }
 }
 
@@ -35,6 +36,10 @@ apply plugin: 'org.kordamp.gradle.stats'
 apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.ratpack.ratpack-groovy'
 apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'com.bmuschko.docker-remote-api'
+
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
+
 
 repositories {
     jcenter()
@@ -60,10 +65,10 @@ dependencies {
     testCompile("org.spockframework:spock-core:1.1-groovy-2.4") {
         exclude group: "org.codehaus.groovy"
     }
-    testCompile "org.codehaus.groovy:groovy-all:$groovyVersion"
-
-    testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
+    //even though we pushed it into the container, we need one driver implementation for compatibility reasons
     testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
+
+    testCompile "org.codehaus.groovy:groovy-all:$groovyVersion"
 
     compile 'org.testcontainers:testcontainers:1.9.0'
     compile 'org.testcontainers:selenium:1.9.0'
@@ -141,7 +146,6 @@ task phantomInstall(type: NpmTask) {
     args = ['install', '-g', 'phantomjs', '--no-save', '--silentMode']
 }
 
-
 // processes your package.json before running grunt build
 yarn_install.dependsOn 'npmInstall'
 yarn_install.dependsOn 'phantomInstall'
@@ -158,86 +162,23 @@ task copyClient(type: Copy) {
     outputs.upToDateWhen { false }
 }
 
+task buildImage(type: DockerBuildImage) {
+    inputDir =  project.projectDir
+    tag = 'madmas/mydemoimage:latest'
+}
+
 grunt_dist.finalizedBy(copyClient)
 
 /** end webapp build **/
 
 build.dependsOn(grunt_dist)
+buildImage.dependsOn(shadowJar)
+build.finalizedBy(buildImage)
 
-/* E2E test with Geb:  gw firefoxTest */
-drivers.each { driver ->
-    task "${driver}Test"(type: Test) {
-        reports {
-            html.destination = reporting.file("$name/tests")
-            junitXml.destination = file("$buildDir/test-results/$name")
-        }
-
-        outputs.upToDateWhen { false }  // Always run tests
-
-        systemProperty "geb.build.reportsDir", reporting.file("$name/geb")
-        systemProperty "geb.env", driver
-
-        // If you wanted to set the baseUrl in your build…
-        // systemProperty "geb.build.baseUrl", "http://myapp.com"
-
-        if(project.hasProperty("applicationAddress")){
-            println "Base url: ${project.applicationAddress}"
-            systemProperty "geb.build.baseUrl", project.applicationAddress
-        }
-
-        if (project.hasProperty("seleniumAddress") && project.seleniumAddress != "") {
-            systemProperty "geb.env", "remote${driver.toLowerCase().tokenize().collect { it.capitalize() }.join(" ")}Runner"
-            systemProperty "e2e-test.remoteWebDriverUrl", project.seleniumAddress
-            println "Selenium address set: ${project.seleniumAddress}"
-        }
-    }
+test {
+    exclude '**/*Spec*'
 }
 
-
-
-/************* Docker specific tasks **********************/
-
-task verifyDockerIsUp(type: ExecWait) {
-    command "docker-compose logs"
-    ready "xterm entered RUNNING state"
-    directory projectDir.toString()
+task e2eTests(type: Test){
+    include '**/*Spec*'
 }
-
-verifyDockerIsUp.doLast {
-    sleep(5 * 1000) //sleep to wait for network sockets
-}
-
-task dockerComposeDown(type: Exec) {
-    commandLine "docker-compose", "down"
-}
-
-task dockerComposeUp(type: Exec) {
-    commandLine "docker-compose", "up", "--build", "-d"
-
-    finalizedBy verifyDockerIsUp
-}
-
-/**
- * Task to run E2E tests in Docker container.
- *
- * Parameters:
- *      applicationAddress - URL of the application instance to test, defaults to a locally running app
- *      seleniumAddress - URL of selenium hub to utilize; defaults to the Selenium hub provided by the docker container
- *
- * Example: ./gradlew e2eTestsDocker -PapplicationAddress=http://192.168.178.2:5050/index.html -PseleniumAddress=http://localhost:24444/wd/hub
- *
- * ./gradlew e2eTestsDocker -PapplicationAddress=http://app/index.html -PseleniumAddress=http://localhost:24444/wd/hub
- */
-task e2eTestsDocker() {
-    dependsOn dockerComposeUp
-
-    drivers.each { driver ->
-        dependsOn "${driver}Test"
-    }
-}
-
-//workaround for demo!
-firefoxTest.finalizedBy dockerComposeDown
-
-// Change the output directory for the main source set back to the old path
-sourceSets.main.output.classesDir = new File(buildDir, "classes/main")

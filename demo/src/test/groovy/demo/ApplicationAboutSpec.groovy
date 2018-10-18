@@ -5,19 +5,32 @@ import demo.pages.ApplicationPage
 import geb.spock.GebReportingSpec
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.testcontainers.containers.BrowserWebDriverContainer
+import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.Network
 import spock.lang.Shared
 
 class ApplicationAboutSpec extends GebReportingSpec {
+    @Shared
+    Network network = Network.newNetwork();
 
     @Shared
-    BrowserWebDriverContainer firefox = new BrowserWebDriverContainer().withDesiredCapabilities(DesiredCapabilities.firefox())
+    GenericContainer app = new GenericContainer("madmas/mydemoimage:latest")
+            .withNetwork(network)
+            .withNetworkAliases("app")
+
+    @Shared
+    BrowserWebDriverContainer firefox = new BrowserWebDriverContainer()
+            .withDesiredCapabilities(DesiredCapabilities.firefox())
+            .withNetwork(network)
 
     def setupSpec() {
+        app.start()
+
         firefox.start()
+
         println firefox.vncAddress
         browser.driver = firefox.webDriver
-        baseUrl = "http://docker.for.mac.localhost:5050/index.html"
-
+        baseUrl = "http://app/index.html"
     }
 
     def "buzzwords are listed on about page"() {
