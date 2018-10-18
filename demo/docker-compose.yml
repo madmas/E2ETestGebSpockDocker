@@ -1,0 +1,16 @@
+version: '2'
+services:
+  app:
+     build: ./
+     container_name: app
+  
+  selenium:
+    image: elgalu/selenium
+    ports:
+      - "24444:24444"
+      - "25900:25900"
+    environment:
+      - VNC_PASSWORD=baselone
+    links: 
+      - app
+     

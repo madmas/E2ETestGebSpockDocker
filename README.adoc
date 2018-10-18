@@ -1,0 +1,64 @@
+= End-to-End testing with Geb, Spock & Docker
+
+This repository contains the slides and demo project used for the talk about "E2E testing with Docker+Geb".
+
+Any feedback is very much appreciated, please send it to link:mailto:markus.schlichting@karakun.com[me] :-) Also, please don't hesitate to ask any questions.
+
+== Run the sample
+
+The demo consits of serveral stages in different branches. Each stage is described in the following, please take care for the branch at the begining of each section.
+
+All commands are meant to be run in the context of the `demo` folder.
+
+=== Demo 1: WaitFor with Geb
+
+_branch_: master 
+
+Demonstrating the `waitFor{}` feature of Geb. Find the page tested in `demo/animation.html` . The Geb script can be found in `src/test/groovy/demo/WaitForSample.groovy` and can be executed straigt away.
+
+=== Demo 2: Geb running locally
+
+_branch_: master 
+
+Shows testing a locally running app. You need to run `./gradlew clean build -x test shadowJar` to build and `./gradlew run` to start the server.
+
+In another console, start the tests with `./gradlew firefoxTest`.
+
+
+=== Demo 3: Geb Tests executed in container
+
+_branch_:  master
+
+To have the test executed isolated in a docker container that provides the selenium setup including firefox and chrome, the setup is done in `docker-compose.yml`, `DOCKERFILE` and `build.gradle`.
+
+Let it run with `./gradlew e2eTestsDocker -PapplicationAddress=http://app/ -PseleniumAddress=http://localhost:24444/wd/hub`
+
+Note that you might need to adjust the application address.
+
+The setup to run this is included as a `.gitlab-ci.yml` file. But before trying to use it, please read on and really consider to use Testcontainers!
+
+=== Demo 4: Geb Tests with Testcontainer 
+
+_branch_: localWithTestcontainers 
+
+* Have the app locally running like described in stage "Demo 2".
+* Run the test that uses Testcontainer to spin up the Selenium Container executed with `./gradlew test --tests *AboutSpec*`
+
+=== Demo 5: Full setup in Testcontainer
+
+_branch_: allWithTestContainers
+
+This contains the setup to package the app into an docker container image and use the docker selenium container to execute the Geb/Selenium tests.
+
+To achieve this, `build.gradle` has changed to create the image and the spec files contain the code to use Testcontainers.
+
+You can run it locally (after the application jar has been built like shown in Stage Demo 2) with the command: `./gradlew e2eTests`
+
+To run it on CI, the `gitlab-ci.yml` file has been adjusted.
+
+
+  
+
+
+
+
