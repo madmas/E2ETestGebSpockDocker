@@ -38,6 +38,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 
 repositories {
     jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
 ext {
@@ -63,6 +64,9 @@ dependencies {
 
     testCompile "org.seleniumhq.selenium:selenium-chrome-driver:$seleniumVersion"
     testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
+
+    compile 'org.testcontainers:testcontainers:1.9.0'
+    compile 'org.testcontainers:selenium:1.9.0'
 
     testCompile 'junit:junit:4.12'
     runtime "org.slf4j:slf4j-simple:1.7.21"
@@ -233,7 +237,7 @@ task e2eTestsDocker() {
 }
 
 //workaround for demo!
-e2eTestsDocker.finalizedBy dockerComposeDown
+firefoxTest.finalizedBy dockerComposeDown
 
 // Change the output directory for the main source set back to the old path
 sourceSets.main.output.classesDir = new File(buildDir, "classes/main")

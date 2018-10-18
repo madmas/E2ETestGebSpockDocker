@@ -3,8 +3,22 @@ package demo
 import demo.pages.ApplicationAboutPage
 import demo.pages.ApplicationPage
 import geb.spock.GebReportingSpec
+import org.openqa.selenium.remote.DesiredCapabilities
+import org.testcontainers.containers.BrowserWebDriverContainer
+import spock.lang.Shared
 
 class ApplicationAboutSpec extends GebReportingSpec {
+
+    @Shared
+    BrowserWebDriverContainer firefox = new BrowserWebDriverContainer().withDesiredCapabilities(DesiredCapabilities.firefox())
+
+    def setupSpec() {
+        firefox.start()
+        println firefox.vncAddress
+        browser.driver = firefox.webDriver
+        baseUrl = "http://docker.for.mac.localhost:5050/index.html"
+
+    }
 
     def "buzzwords are listed on about page"() {
         when: "navigating to the application"

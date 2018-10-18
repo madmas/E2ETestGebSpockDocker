@@ -21,7 +21,7 @@ environments {
 	firefox {
 		atCheckWaiting = 1
 
-		driver = { new FirefoxDriver() }
+//		driver = { new FirefoxDriver() }
 	}
 
 	remoteFirefoxRunner {
