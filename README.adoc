@@ -31,7 +31,11 @@ _branch_:  master
 
 To have the test executed isolated in a docker container that provides the selenium setup including firefox and chrome, the setup is done in `docker-compose.yml`, `DOCKERFILE` and `build.gradle`.
 
-Let it run with `./gradlew e2eTestsDocker -PapplicationAddress=http://app/ -PseleniumAddress=http://localhost:24444/wd/hub`
+Let it run with 
+
+```
+./gradlew e2eTestsDocker -PapplicationAddress=http://app/ -PseleniumAddress=http://localhost:24444/wd/hub
+```
 
 Note that you might need to adjust the application address.
 
@@ -42,7 +46,10 @@ The setup to run this is included as a `.gitlab-ci.yml` file. But before trying 
 _branch_: localWithTestcontainers 
 
 * Have the app locally running like described in stage "Demo 2".
-* Run the test that uses Testcontainer to spin up the Selenium Container executed with `./gradlew test --tests *AboutSpec*`
+* Run the test that uses Testcontainer to spin up the Selenium Container executed with 
+```
+./gradlew test --tests *AboutSpec*
+```
 
 === Demo 5: Full setup in Testcontainer
 
