@@ -42,14 +42,14 @@ repositories {
 
 ext {
     // The drivers we want to use
-    drivers = ["firefox"]
+    drivers = ["chrome"]
 
     ext {
         groovyVersion = '2.4.5'
-        gebVersion = '2.2'
-        seleniumVersion = '3.14.0'
+        gebVersion = '3.0.1'
+        seleniumVersion = '4.0.0-alpha-2'
         chromeDriverVersion = '2.33'
-        geckoDriverVersion = '0.23.0'
+        geckoDriverVersion = '0.24.0'
     }
 }
 
