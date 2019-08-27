@@ -21,18 +21,12 @@ plugins {
     id "com.moowork.grunt" version "1.2.0"
     id "com.moowork.node" version "1.2.0"
     id "com.energizedwork.webdriver-binaries" version "1.4"
-    id 'net.saliman.cobertura' version '2.3.1'
-    id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
 apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'application'
-apply plugin: 'com.github.kt3k.coveralls'
-apply plugin: 'build-dashboard'
-apply plugin: 'org.kordamp.gradle.stats'
-apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.ratpack.ratpack-groovy'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'com.bmuschko.docker-remote-api'
