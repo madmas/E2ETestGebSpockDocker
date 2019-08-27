@@ -141,7 +141,7 @@ task phantomInstall(type: NpmTask) {
 
 // processes your package.json before running grunt build
 yarn_install.dependsOn 'npmInstall'
-yarn_install.dependsOn 'phantomInstall'
+// yarn_install.dependsOn 'phantomInstall'
 
 // makes sure on each build that grunt is installed
 grunt_dist.dependsOn 'installGrunt'
