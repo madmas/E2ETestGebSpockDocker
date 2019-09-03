@@ -133,11 +133,17 @@ task copyClient(type: Copy) {
     outputs.upToDateWhen { false }
 }
 
+copyClient.doFirst {
+    delete "${projectDir}/src/ratpack/public"
+}
+
 buildNgProd.finalizedBy(copyClient)
 
 /** end webapp build **/
 
 build.dependsOn(buildNgProd)
+
+run.dependsOn(buildNgProd)
 
 /* E2E test with Geb:  gw firefoxTest */
 drivers.each { driver ->
