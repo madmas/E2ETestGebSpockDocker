@@ -7,13 +7,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
-        classpath 'org.ajoberstar:gradle-git:1.3.2'
-        classpath 'org.kordamp.gradle:stats-gradle-plugin:0.2.0'
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
-        classpath 'net.nemerosa:versioning:2.1.0'
         classpath 'io.ratpack:ratpack-gradle:1.5.0'
-        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
+        classpath "com.github.jengelman.gradle.plugins:shadow:5.1.0"
     }
 }
 
@@ -21,18 +16,12 @@ plugins {
     id "com.moowork.grunt" version "1.2.0"
     id "com.moowork.node" version "1.2.0"
     id "com.energizedwork.webdriver-binaries" version "1.4"
-    id 'net.saliman.cobertura' version '2.3.1'
-    id 'com.github.kt3k.coveralls' version '2.8.2'
 }
 
 apply plugin: 'idea'
 apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'application'
-apply plugin: 'com.github.kt3k.coveralls'
-apply plugin: 'build-dashboard'
-apply plugin: 'org.kordamp.gradle.stats'
-apply plugin: 'com.github.ben-manes.versions'
 apply plugin: 'io.ratpack.ratpack-groovy'
 apply plugin: 'com.github.johnrengelman.shadow'
 
@@ -42,7 +31,7 @@ repositories {
 
 ext {
     // The drivers we want to use
-    drivers = ["chrome"]
+    drivers = ["firefox"]
 
     ext {
         groovyVersion = '2.4.5'
@@ -103,7 +92,7 @@ def jsWorkingDir = "${projectDir}/src/main/js"
 
 node {
     // Version of node to use.
-    version = '8.12.0'
+    version = '10.16.3'
     // Base URL for fetching node distributions (change if you have a mirror).
     distBaseUrl = 'http://nodejs.org/dist'
     // If true, it will download node using above parameters.
@@ -133,19 +122,9 @@ npm_install {
     outputs.upToDateWhen { false }
 }
 
-task phantomInstall(type: NpmTask) {
-    args = ['install', '-g', 'phantomjs', '--no-save', '--silentMode']
+task buildNgProd(type: NpmTask, dependsOn: 'npmInstall') {
+    args = ['run', 'build-prod']
 }
-
-
-// processes your package.json before running grunt build
-yarn_install.dependsOn 'npmInstall'
-yarn_install.dependsOn 'phantomInstall'
-
-// makes sure on each build that grunt is installed
-grunt_dist.dependsOn 'installGrunt'
-
-grunt_dist.dependsOn 'yarn_install'
 //*************************
 
 task copyClient(type: Copy) {
@@ -154,11 +133,11 @@ task copyClient(type: Copy) {
     outputs.upToDateWhen { false }
 }
 
-grunt_dist.finalizedBy(copyClient)
+buildNgProd.finalizedBy(copyClient)
 
 /** end webapp build **/
 
-build.dependsOn(grunt_dist)
+build.dependsOn(buildNgProd)
 
 /* E2E test with Geb:  gw firefoxTest */
 drivers.each { driver ->
@@ -188,52 +167,3 @@ drivers.each { driver ->
         }
     }
 }
-
-
-
-/************* Docker specific tasks **********************/
-
-task verifyDockerIsUp(type: ExecWait) {
-    command "docker-compose logs"
-    ready "xterm entered RUNNING state"
-    directory projectDir.toString()
-}
-
-verifyDockerIsUp.doLast {
-    sleep(5 * 1000) //sleep to wait for network sockets
-}
-
-task dockerComposeDown(type: Exec) {
-    commandLine "docker-compose", "down"
-}
-
-task dockerComposeUp(type: Exec) {
-    commandLine "docker-compose", "up", "--build", "-d"
-
-    finalizedBy verifyDockerIsUp
-}
-
-/**
- * Task to run E2E tests in Docker container.
- *
- * Parameters:
- *      applicationAddress - URL of the application instance to test, defaults to a locally running app
- *      seleniumAddress - URL of selenium hub to utilize; defaults to the Selenium hub provided by the docker container
- *
- * Example: ./gradlew e2eTestsDocker -PapplicationAddress=http://192.168.178.2:5050/index.html -PseleniumAddress=http://localhost:24444/wd/hub
- *
- * ./gradlew e2eTestsDocker -PapplicationAddress=http://app/index.html -PseleniumAddress=http://localhost:24444/wd/hub
- */
-task e2eTestsDocker() {
-    dependsOn dockerComposeUp
-
-    drivers.each { driver ->
-        dependsOn "${driver}Test"
-    }
-}
-
-//workaround for demo!
-e2eTestsDocker.finalizedBy dockerComposeDown
-
-// Change the output directory for the main source set back to the old path
-sourceSets.main.output.classesDir = new File(buildDir, "classes/main")

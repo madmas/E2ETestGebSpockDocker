@@ -3,6 +3,8 @@ services:
   app:
      build: ./
      container_name: app
+     ports:
+       - "80:80"
   
   selenium:
     image: elgalu/selenium
