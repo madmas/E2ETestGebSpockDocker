@@ -1,11 +1,11 @@
 <div class="header">
   <ul class="nav nav-pills float-right" role="tablist">
     <li class="nav-item" role="presentation" id="home">
-      <a class="nav-link active" [routerLink]="['/']">Home</a></li>
+      <a class="nav-link" [ngClass]="{'active': route === 'home'}" [routerLink]="['/']">Home</a></li>
     <li  class="nav-item"  role="presentation" id="about">
-      <a class="nav-link" [routerLink]="['/about']">About</a></li>
+      <a class="nav-link" [ngClass]="{'active': route === '/about'}"  [routerLink]="['/about']">About</a></li>
     <li  class="nav-item" role="presentation" id="contact" 
-    ><a class="nav-link" [routerLink]="['/contact']">Contact</a></li>
+    ><a class="nav-link" [ngClass]="{'active': route === '/contact'}"  [routerLink]="['/contact']">Contact</a></li>
   </ul>
   <h3 class="text-muted">E2E Testing: Docker & Geb</h3>
 </div>

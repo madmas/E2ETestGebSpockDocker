@@ -7,12 +7,8 @@ buildscript {
     }
 
     dependencies {
-        classpath 'nl.javadude.gradle.plugins:license-gradle-plugin:0.11.0'
-        classpath 'org.kordamp.gradle:stats-gradle-plugin:0.2.0'
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
-        classpath 'net.nemerosa:versioning:2.1.0'
         classpath 'io.ratpack:ratpack-gradle:1.5.0'
-        classpath "com.github.jengelman.gradle.plugins:shadow:1.2.3"
+        classpath "com.github.jengelman.gradle.plugins:shadow:5.1.0"
         classpath 'com.bmuschko:gradle-docker-plugin:3.2.0'
     }
 }
@@ -105,7 +101,7 @@ def jsWorkingDir = "${projectDir}/src/main/js"
 
 node {
     // Version of node to use.
-    version = '8.12.0'
+    version = '10.16.3'
     // Base URL for fetching node distributions (change if you have a mirror).
     distBaseUrl = 'http://nodejs.org/dist'
     // If true, it will download node using above parameters.
@@ -135,18 +131,9 @@ npm_install {
     outputs.upToDateWhen { false }
 }
 
-task phantomInstall(type: NpmTask) {
-    args = ['install', '-g', 'phantomjs', '--no-save', '--silentMode']
+task buildNgProd(type: NpmTask, dependsOn: 'npmInstall') {
+    args = ['run', 'build-prod']
 }
-
-// processes your package.json before running grunt build
-yarn_install.dependsOn 'npmInstall'
-// yarn_install.dependsOn 'phantomInstall'
-
-// makes sure on each build that grunt is installed
-grunt_dist.dependsOn 'installGrunt'
-
-grunt_dist.dependsOn 'yarn_install'
 //*************************
 
 task copyClient(type: Copy) {
@@ -160,11 +147,11 @@ task buildImage(type: DockerBuildImage) {
     tag = 'madmas/mydemoimage:latest'
 }
 
-grunt_dist.finalizedBy(copyClient)
+buildNgProd.finalizedBy(copyClient)
 
 /** end webapp build **/
 
-build.dependsOn(grunt_dist)
+build.dependsOn(buildNgProd)
 buildImage.dependsOn(shadowJar)
 build.finalizedBy(buildImage)
 

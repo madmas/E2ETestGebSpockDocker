@@ -21,15 +21,15 @@ export class AboutComponent implements OnInit {
   ngOnInit() {
     this.getBuzzwords()
     .subscribe((res: any) => {
-      this.data = res;
+      this.data = res.items;
       console.log(this.data);
     }, err => {
       console.log(err);
     });
   }
 
-  getBuzzwords(): Observable<string[]> {
-    return this.http.get<string[]>(apiUrl)
+  getBuzzwords(): Observable<any> {
+    return this.http.get<any>(apiUrl)
       .pipe(
         tap(product => console.log('fetched buzzwords')),
         catchError(this.handleError('getBuzzwords', []))

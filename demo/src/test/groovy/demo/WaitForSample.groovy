@@ -10,7 +10,7 @@ Browser.drive {
     assert "Show us the modal!" == $("div#app h3").text()
 
     $("div#app button").click()
-    waitFor { !$("div.modal").hasClass("fade-enter-active") }
+    //waitFor { !$("div.modal").hasClass("fade-enter-active") }
 
 
     assert $("div.modal").displayed && !$("div.modal").hasClass("fade-enter-active")

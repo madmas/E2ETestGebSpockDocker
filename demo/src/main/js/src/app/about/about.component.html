@@ -4,7 +4,7 @@
 <div>
     This application is being developed to show:
     <ul id="remoteItems">
-        <li ng-repeat="item in items">
+        <li *ngFor="let item of data">
             {{item}}
         </li>
     </ul>
