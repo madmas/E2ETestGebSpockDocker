@@ -4,6 +4,7 @@ import demo.pages.ApplicationAboutPage
 import demo.pages.ApplicationContactPage
 import demo.pages.ApplicationPage
 import geb.spock.GebReportingSpec
+import org.openqa.selenium.firefox.FirefoxOptions
 import org.openqa.selenium.remote.DesiredCapabilities
 import org.testcontainers.containers.BrowserWebDriverContainer
 import org.testcontainers.containers.GenericContainer
@@ -23,7 +24,7 @@ class ApplicationContactSpec extends GebReportingSpec {
 
     @Shared
     BrowserWebDriverContainer firefox = new BrowserWebDriverContainer()
-            .withDesiredCapabilities(DesiredCapabilities.firefox())
+            .withCapabilities(new FirefoxOptions())
             .withNetwork(network)
 
     def setupSpec() {
