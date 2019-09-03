@@ -1,80 +1,27 @@
-# Angular.js Boilerplate project
+# MyDreamApp
 
-A project skeleton to kickstart your angular.js app.
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.0.
 
-## Getting started
+## Development server
 
-### toolchain
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
 
-#### Node.js & npm
+## Code scaffolding
 
-http://www.nodejs.org
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-https://www.npmjs.org/
+## Build
 
-For Ubuntu and OSx:
-Use NVM (nodejs version manager) to have an installation that works without sudo rights (this is the case when installing using the repository).
-This also offers the flexibility to quickly switch between versions. 
-http://www.wenincode.com/installing-node-jsnpm-without-sudo/ (you might adapt the NVM version in the download path)
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
 
-Also for ruby (in order to install compass) you can use RVM (ruby version manager).
+## Running unit tests
 
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-#### Bower
+## Running end-to-end tests
 
-`npm install -g bower`
+Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
 
-#### Grunt
+## Further help
 
-http://gruntjs.com/installing-grunt
-
-`npm install -g grunt-cli`
-`npm install -g grunt`
-
-### Ruby & Ruby gem
-
-
-### Compass
-gem install compass
-
-### first steps
-
-#### Use this project as a foundation 
-
-Export this project to use it as the boilerplate for your project:
-
-```
-mkdir your-new-project-folder
-```
-
-get the tar.gz or .tar.bz2 archive from the repository; *do not pick the ZIP* as .zip does not include the .bowerrc and .gitignore files. E.g. paste this in you browser:
-
-and save the file to your new projects folder. Continue with:
-
-```
-tar xvzf archive.tar.gz
-
-git init
-git add .
-git commit -m "Initial commit"
-```
-
-Create a repository e.g. on github and push your project there.
-
-#### Start to develop
-
-```
-~# npm install
-
-(lot's of output)
-
-~# bower install
-
-(lot's of output)
-
-~# grunt run
-
-(project is being processed and a minimal server is started and the app opened in browser, attached to a live reload)
-```
-
-Happy coding :-)
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).

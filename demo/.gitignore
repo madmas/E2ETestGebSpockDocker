@@ -9,3 +9,4 @@ src/ratpack/public
 build/
 buildSrc/
 classes/
+out/
