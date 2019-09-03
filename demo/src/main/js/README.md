@@ -1,7 +1,7 @@
 # Demo app for E2E tests with Docker/Testcontainers and Geb/Spock
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.0.
-And extended with some controls, a HTTP cal lto the server, Bootstrap and FontAwesome.
+It has been extended with some controls, a HTTP cal lto the server, Bootstrap and FontAwesome.
 
 ## Development server
 
