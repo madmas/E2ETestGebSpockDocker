@@ -42,7 +42,6 @@ ext {
     ext {
         groovyVersion = '2.4.5'
         gebVersion = '3.0.1'
-        seleniumVersion = '4.0.0-alpha-2'
         chromeDriverVersion = '2.33'
         geckoDriverVersion = '0.24.0'
     }
@@ -55,7 +54,7 @@ dependencies {
         exclude group: "org.codehaus.groovy"
     }
     //even though we pushed it into the container, we need one driver implementation for compatibility reasons
-    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:$seleniumVersion"
+    testCompile "org.seleniumhq.selenium:selenium-firefox-driver:3.141.59"
 
     testCompile "org.codehaus.groovy:groovy-all:$groovyVersion"
 
