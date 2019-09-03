@@ -59,8 +59,8 @@ dependencies {
 
     testCompile "org.codehaus.groovy:groovy-all:$groovyVersion"
 
-    compile 'org.testcontainers:testcontainers:1.9.0'
-    compile 'org.testcontainers:selenium:1.9.0'
+    compile 'org.testcontainers:testcontainers:1.12.0'
+    compile 'org.testcontainers:selenium:1.12.0'
 
     testCompile 'junit:junit:4.12'
     runtime "org.slf4j:slf4j-simple:1.7.21"
